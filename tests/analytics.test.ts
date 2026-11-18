@@ -5,7 +5,7 @@ import {
   calculateRemainingHours,
   calculateRollingSpeed,
   formatDuration,
-} from "../src/lib/analytics/calculator.ts";
+} from "../src/lib/analytics/calculator";
 
 test("calculateSessionSpeed calculates pages per hour correctly", () => {
   // 30 pages in 60 minutes = 30 pages/hour

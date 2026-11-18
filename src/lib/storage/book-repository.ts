@@ -1,5 +1,5 @@
-import type { Book, ReadingSession } from "../../types/database.ts";
-import { calculateSessionSpeed } from "../analytics/calculator.ts";
+import type { Book, ReadingSession } from "../../types/database";
+import { calculateSessionSpeed } from "../analytics/calculator";
 
 const INITIAL_BOOKS: Book[] = [
   {

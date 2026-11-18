@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { LocalBookRepository } from "../src/lib/storage/book-repository.ts";
+import { LocalBookRepository } from "../src/lib/storage/book-repository";
 
 test("LocalBookRepository initializes with default books", () => {
   const repo = new LocalBookRepository();
