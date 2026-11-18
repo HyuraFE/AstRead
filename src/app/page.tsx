@@ -9,6 +9,9 @@ import { calculateRollingSpeed, calculateRemainingHours, formatDuration } from "
 import { BookCard } from "../components/BookCard";
 import { SessionTimerModal } from "../components/SessionTimerModal";
 import { AddBookModal } from "../components/AddBookModal";
+import { ImportEpubModal } from "../components/modals/ImportEpubModal";
+import { EpubReader } from "../components/reader/EpubReader";
+import { hasEpubFile } from "../lib/storage/epub-storage";
 
 const FILTERS = [
   { value: "all", label: "Semua" },
@@ -27,11 +30,25 @@ export default function HomePage() {
   const [filter, setFilter] = useState<FilterValue>("all");
   const [activeBook, setActiveBook] = useState<Book | null>(null);
   const [showAddModal, setShowAddModal] = useState(false);
+  const [showImportModal, setShowImportModal] = useState(false);
+  const [readingEpubBookId, setReadingEpubBookId] = useState<string | null>(null);
+  const [epubAvailability, setEpubAvailability] = useState<Record<string, boolean>>({});
 
   // Load initial data on mount
   useEffect(() => {
-    setBooks(repo.getBooks());
+    const loadedBooks = repo.getBooks();
+    setBooks(loadedBooks);
     setSessions(repo.getSessions());
+
+    // Check which books have local EPUB attached in IndexedDB
+    async function checkEpubs() {
+      const avail: Record<string, boolean> = {};
+      for (const b of loadedBooks) {
+        avail[b.id] = await hasEpubFile(b.id);
+      }
+      setEpubAvailability(avail);
+    }
+    checkEpubs();
   }, [repo]);
 
   const handleAddBook = (data: {
@@ -115,6 +132,14 @@ export default function HomePage() {
             <BarChart3 className="w-4 h-4" />
           </Link>
           <button
+            onClick={() => setShowImportModal(true)}
+            className="h-11 flex items-center gap-2 px-3 sm:px-4 rounded-lg bg-amber-600/20 border border-amber-500/40 text-amber-300 text-sm font-semibold hover:bg-amber-600/30 transition-colors"
+            title="Import EPUB dari HP"
+          >
+            <BookOpen className="w-4 h-4" />
+            <span className="hidden sm:inline">Import EPUB</span>
+          </button>
+          <button
             onClick={() => setShowAddModal(true)}
             className="h-11 flex items-center gap-2 px-4 rounded-lg bg-indigo-600 text-white text-sm font-semibold hover:bg-indigo-500 active:bg-indigo-700 transition-colors"
           >
@@ -186,13 +211,24 @@ export default function HomePage() {
           {filteredBooks.map((book) => {
             const analytics = bookAnalytics.get(book.id);
             return (
-              <BookCard
-                key={book.id}
-                book={book}
-                estimatedRemaining={analytics?.remaining ?? null}
-                rollingSpeed={analytics?.speed ?? null}
-                onStartSession={setActiveBook}
-              />
+              <div key={book.id} className="relative group">
+                <BookCard
+                  book={book}
+                  estimatedRemaining={analytics?.remaining ?? null}
+                  rollingSpeed={analytics?.speed ?? null}
+                  onStartSession={setActiveBook}
+                />
+                {epubAvailability[book.id] && (
+                  <button
+                    onClick={() => setReadingEpubBookId(book.id)}
+                    className="absolute top-4 right-4 z-10 px-2.5 py-1 rounded-md text-[11px] font-bold bg-amber-500/20 border border-amber-500/40 text-amber-300 hover:bg-amber-500/30 flex items-center gap-1 shadow-sm transition-transform active:scale-95"
+                    title="Buka EPUB Reader"
+                  >
+                    <BookOpen className="w-3 h-3" />
+                    <span>Baca EPUB</span>
+                  </button>
+                )}
+              </div>
             );
           })}
         </section>
@@ -221,6 +257,27 @@ export default function HomePage() {
         onClose={() => setShowAddModal(false)}
         onAdd={handleAddBook}
       />
+
+      <ImportEpubModal
+        isOpen={showImportModal}
+        onClose={() => setShowImportModal(false)}
+        onImportSuccess={(newBookId) => {
+          setBooks(repo.getBooks());
+          setEpubAvailability((prev) => ({ ...prev, [newBookId]: true }));
+          setReadingEpubBookId(newBookId);
+        }}
+      />
+
+      {readingEpubBookId && (
+        <EpubReader
+          bookId={readingEpubBookId}
+          onClose={() => {
+            setReadingEpubBookId(null);
+            setBooks(repo.getBooks());
+            setSessions(repo.getSessions());
+          }}
+        />
+      )}
 
       <footer className="pt-8 border-t border-[#1e2235] text-center text-[10px] text-slate-600">
         AstRead by Pylexia • Phase 2 Core Tracker

@@ -1,4 +1,4 @@
-import { BookTheme } from "@/types/database";
+export type BookTheme = "light" | "dark";
 
 export interface ReaderThemeTokens {
   name: string;

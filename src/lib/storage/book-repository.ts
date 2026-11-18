@@ -163,3 +163,6 @@ export class LocalBookRepository {
     return [...this.sessions];
   }
 }
+
+export const bookRepo = new LocalBookRepository();
+

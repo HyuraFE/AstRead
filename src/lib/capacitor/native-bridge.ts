@@ -31,6 +31,14 @@ export async function triggerHapticFeedback(type: "light" | "medium" | "heavy"):
   await Haptics.impact({ style: impactType as any });
 }
 
+export async function triggerLightHaptic(): Promise<void> {
+  return triggerHapticFeedback("light");
+}
+
+export async function triggerSuccessHaptic(): Promise<void> {
+  return triggerHapticFeedback("medium");
+}
+
 export async function setStatusBarTheme(theme: "dark" | "light"): Promise<void> {
   if (!StatusBar) return;
   await StatusBar.setStyle({ style: theme === "dark" ? ("DARK" as any) : ("LIGHT" as any) });
