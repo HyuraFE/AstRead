@@ -83,30 +83,24 @@ export function EpubReader({ bookId, onClose, repo }: EpubReaderProps) {
             height: "100%",
             flow: "paginated",
             spread: "none",
-            minSpreadWidth: 8000, // Force single page layout even on wide screens
           });
           renditionRef.current = rendition;
 
           // Register locked themes
           applyRenditionThemes(rendition, settings);
 
-          // Restore last position if available
+          // Restore last position if available or display first chapter
           const savedPos = await getReadingPosition(bookId);
           if (savedPos && savedPos.cfi) {
-            await rendition.display(savedPos.cfi);
+            try {
+              await rendition.display(savedPos.cfi);
+            } catch (e) {
+              console.warn("Failed to restore CFI, falling back to start:", e);
+              await rendition.display();
+            }
           } else {
             await rendition.display();
           }
-
-          // Trigger a layout resize pass after container is fully rendered
-          setTimeout(() => {
-            if (viewerRef.current && renditionRef.current) {
-              const rect = viewerRef.current.getBoundingClientRect();
-              if (rect.width > 0 && rect.height > 0) {
-                renditionRef.current.resize(rect.width, rect.height);
-              }
-            }
-          }, 150);
 
           // Register interaction listeners
           rendition.on("relocated", (location: any) => {
@@ -154,60 +148,28 @@ export function EpubReader({ bookId, onClose, repo }: EpubReaderProps) {
     };
   }, [bookId]);
 
-  // 3. Apply themes and handle viewport resize
+  // 3. Apply themes when settings change
   useEffect(() => {
     if (renditionRef.current) {
       applyRenditionThemes(renditionRef.current, settings);
     }
   }, [settings]);
 
-  useEffect(() => {
-    const handleResize = () => {
-      if (viewerRef.current && renditionRef.current) {
-        const rect = viewerRef.current.getBoundingClientRect();
-        if (rect.width > 0 && rect.height > 0) {
-          renditionRef.current.resize(rect.width, rect.height);
-        }
-      }
-    };
-
-    window.addEventListener("resize", handleResize);
-    window.addEventListener("orientationchange", handleResize);
-    return () => {
-      window.removeEventListener("resize", handleResize);
-      window.removeEventListener("orientationchange", handleResize);
-    };
-  }, []);
-
   function applyRenditionThemes(rendition: Rendition, s: ReaderSettings) {
     const theme = EDITORIAL_THEMES[s.theme];
     rendition.themes.register("editorial", {
-      "html, body": {
+      body: {
         background: `${theme.bgCanvas} !important`,
         color: `${theme.textMain} !important`,
         "font-family": `${s.fontFamily === "serif" ? "'Newsreader', Georgia, serif" : "system-ui, sans-serif"} !important`,
         "font-size": `${s.fontSize}px !important`,
         "line-height": `${s.lineHeight} !important`,
-        margin: "0 !important",
-        padding: "0 24px !important",
-        "box-sizing": "border-box !important",
-        "overflow-x": "hidden !important",
-        "word-break": "break-word !important",
-        "overflow-wrap": "break-word !important",
+        padding: "0 20px !important",
       },
       p: {
         "text-indent": "1.5rem !important",
         "margin-bottom": "0.75rem !important",
         "text-align": "justify !important",
-        "line-height": `${s.lineHeight} !important`,
-      },
-      "img, svg, image": {
-        "max-width": "100% !important",
-        "max-height": "100% !important",
-        "object-fit": "contain !important",
-        height: "auto !important",
-        display: "block !important",
-        margin: "0 auto !important",
       },
       h1: { color: `${theme.textMain} !important` },
       h2: { color: `${theme.textMain} !important` },
@@ -447,10 +409,7 @@ export function EpubReader({ bookId, onClose, repo }: EpubReaderProps) {
         )}
 
         {/* EPUB.js Rendition Target */}
-        <div
-          ref={viewerRef}
-          className="w-full h-full max-w-3xl mx-auto px-2 sm:px-6 cursor-pointer overflow-hidden flex items-center justify-center [&_iframe]:w-full [&_iframe]:h-full [&_iframe]:border-0"
-        />
+        <div ref={viewerRef} className="w-full h-full cursor-pointer" />
 
         {/* Transparent Click Zones for Page Flipping */}
         {!loading && !error && (
