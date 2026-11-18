@@ -3,6 +3,9 @@ node_modules/
 out/
 build/
 .superpowers/
+docs/superpowers/
+.agent/
+.claude/
 .env.local
 .env*.local
 *.log
