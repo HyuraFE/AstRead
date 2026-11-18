@@ -220,26 +220,15 @@ export default function HomePage() {
           {filteredBooks.map((book) => {
             const analytics = bookAnalytics.get(book.id);
             return (
-              <div key={book.id} className="relative group">
-                <BookCard
-                  book={book}
-                  estimatedRemaining={analytics?.remaining ?? null}
-                  rollingSpeed={analytics?.speed ?? null}
-                  onStartSession={setActiveBook}
-                />
-                <div className="absolute top-4 right-4 z-10 flex items-center gap-1.5">
-                  {epubAvailability[book.id] && (
-                    <button
-                      onClick={() => setReadingEpubBookId(book.id)}
-                      className="px-2.5 py-1 rounded-md text-[11px] font-bold bg-amber-500/20 border border-amber-500/40 text-amber-300 hover:bg-amber-500/30 flex items-center gap-1 shadow-sm transition-transform active:scale-95"
-                      title="Lanjut Baca EPUB"
-                    >
-                      <BookOpen className="w-3 h-3" />
-                      <span>Lanjut Baca</span>
-                    </button>
-                  )}
-                </div>
-              </div>
+              <BookCard
+                key={book.id}
+                book={book}
+                estimatedRemaining={analytics?.remaining ?? null}
+                rollingSpeed={analytics?.speed ?? null}
+                onStartSession={setActiveBook}
+                hasEpub={Boolean(epubAvailability[book.id])}
+                onReadEpub={(id) => setReadingEpubBookId(id)}
+              />
             );
           })}
         </section>
@@ -273,7 +262,7 @@ export default function HomePage() {
         isOpen={showImportModal}
         onClose={() => setShowImportModal(false)}
         repo={repo}
-        onImportSuccess={(newBookId) => {
+        onImportSuccess={async (newBookId) => {
           setBooks(repo.getBooks());
           setEpubAvailability((prev) => ({ ...prev, [newBookId]: true }));
           setReadingEpubBookId(newBookId);
@@ -284,10 +273,17 @@ export default function HomePage() {
         <EpubReader
           bookId={readingEpubBookId}
           repo={repo}
-          onClose={() => {
+          onClose={async () => {
             setReadingEpubBookId(null);
-            setBooks(repo.getBooks());
+            const updated = repo.getBooks();
+            setBooks(updated);
             setSessions(repo.getSessions());
+            // Refresh epub availability map
+            const avail: Record<string, boolean> = {};
+            for (const b of updated) {
+              avail[b.id] = await hasEpubFile(b.id);
+            }
+            setEpubAvailability(avail);
           }}
         />
       )}

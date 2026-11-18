@@ -8,6 +8,8 @@ interface BookCardProps {
   estimatedRemaining: string | null;
   rollingSpeed: number | null;
   onStartSession: (book: Book) => void;
+  hasEpub?: boolean;
+  onReadEpub?: (bookId: string) => void;
 }
 
 const STATUS_CONFIG: Record<Book["status"], { label: string; className: string }> = {
@@ -17,71 +19,93 @@ const STATUS_CONFIG: Record<Book["status"], { label: string; className: string }
   plan_to_read: { label: "Direncanakan", className: "text-slate-300 bg-slate-800/60 border-slate-700/60" },
 };
 
-export function BookCard({ book, estimatedRemaining, rollingSpeed, onStartSession }: BookCardProps) {
+export function BookCard({
+  book,
+  estimatedRemaining,
+  rollingSpeed,
+  onStartSession,
+  hasEpub,
+  onReadEpub,
+}: BookCardProps) {
   const progress = book.total_pages > 0 ? (book.current_page / book.total_pages) * 100 : 0;
   const status = STATUS_CONFIG[book.status];
   const isCompleted = book.status === "completed";
 
   return (
-    <article className="p-5 rounded-xl bg-[#12141f] border border-[#1e2235] hover:border-[#2a3050] transition-colors">
-      <div className="flex items-start justify-between gap-3 mb-3">
-        <div className="min-w-0">
-          <h3 className="font-semibold text-white text-sm leading-tight truncate">{book.title}</h3>
-          <p className="text-xs text-slate-400 mt-0.5">
-            {book.volume ? `${book.volume} • ` : ""}
-            {book.author || "Unknown author"}
-          </p>
+    <article className="p-5 rounded-xl bg-[#12141f] border border-[#1e2235] hover:border-[#2a3050] transition-colors flex flex-col justify-between">
+      <div>
+        <div className="flex items-start justify-between gap-3 mb-3">
+          <div className="min-w-0">
+            <h3 className="font-semibold text-white text-sm leading-tight truncate">{book.title}</h3>
+            <p className="text-xs text-slate-400 mt-0.5">
+              {book.volume ? `${book.volume} • ` : ""}
+              {book.author || "Unknown author"}
+            </p>
+          </div>
+          <span
+            className={`shrink-0 px-2.5 py-1 text-[10px] font-medium rounded-full border ${status.className}`}
+          >
+            {status.label}
+          </span>
         </div>
-        <span
-          className={`shrink-0 px-2.5 py-1 text-[10px] font-medium rounded-full border ${status.className}`}
-        >
-          {status.label}
-        </span>
-      </div>
 
-      {/* Progress bar */}
-      <div className="mb-3">
-        <div
-          className="h-2 w-full rounded-full bg-[#090a0f] overflow-hidden"
-          role="progressbar"
-          aria-valuenow={Math.round(progress)}
-          aria-valuemin={0}
-          aria-valuemax={100}
-          aria-label={`Progres ${book.title}`}
-        >
+        {/* Progress bar */}
+        <div className="mb-3">
           <div
-            className={`h-full rounded-full ${isCompleted ? "bg-emerald-500" : "bg-indigo-500"}`}
-            style={{ width: `${Math.min(100, progress)}%` }}
-          />
+            className="h-2 w-full rounded-full bg-[#090a0f] overflow-hidden"
+            role="progressbar"
+            aria-valuenow={Math.round(progress)}
+            aria-valuemin={0}
+            aria-valuemax={100}
+            aria-label={`Progres ${book.title}`}
+          >
+            <div
+              className={`h-full rounded-full ${isCompleted ? "bg-emerald-500" : "bg-indigo-500"}`}
+              style={{ width: `${Math.min(100, progress)}%` }}
+            />
+          </div>
+          <div className="flex items-center justify-between mt-1.5 text-xs">
+            <span className="text-slate-400 font-mono tabular-nums">
+              {book.current_page} / {book.total_pages} hlm
+            </span>
+            <span className="text-slate-500 font-mono tabular-nums">
+              {Math.round(progress)}%
+            </span>
+          </div>
         </div>
-        <div className="flex items-center justify-between mt-1.5 text-xs">
-          <span className="text-slate-400 font-mono tabular-nums">
-            {book.current_page} / {book.total_pages} hlm
-          </span>
-          <span className="text-slate-500 font-mono tabular-nums">
-            {Math.round(progress)}%
-          </span>
-        </div>
-      </div>
 
-      {/* Speed & estimation info */}
-      <div className="flex flex-wrap gap-2 mb-4">
-        {rollingSpeed !== null && rollingSpeed > 0 && (
-          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 text-[10px] rounded-md bg-[#090a0f] border border-[#1e2235] text-cyan-300 font-mono">
-            <BookOpen className="w-3 h-3" aria-hidden="true" />
-            {rollingSpeed} hlm/jam
-          </span>
-        )}
-        {estimatedRemaining && (
-          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 text-[10px] rounded-md bg-[#090a0f] border border-[#1e2235] text-slate-300 font-mono">
-            Sisa: {estimatedRemaining}
-          </span>
-        )}
+        {/* Speed & estimation info */}
+        <div className="flex flex-wrap gap-2 mb-4">
+          {rollingSpeed !== null && rollingSpeed > 0 && (
+            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 text-[10px] rounded-md bg-[#090a0f] border border-[#1e2235] text-cyan-300 font-mono">
+              <BookOpen className="w-3 h-3" aria-hidden="true" />
+              {rollingSpeed} hlm/jam
+            </span>
+          )}
+          {estimatedRemaining && (
+            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 text-[10px] rounded-md bg-[#090a0f] border border-[#1e2235] text-slate-300 font-mono">
+              Sisa: {estimatedRemaining}
+            </span>
+          )}
+          {hasEpub && (
+            <span className="inline-flex items-center gap-1 px-2 py-0.5 text-[10px] rounded bg-amber-500/10 border border-amber-500/30 text-amber-300 font-medium">
+              EPUB
+            </span>
+          )}
+        </div>
       </div>
 
       {/* Actions */}
-      <div className="flex gap-2">
-        {isCompleted ? (
+      <div className="flex gap-2 mt-2">
+        {hasEpub ? (
+          <button
+            onClick={() => onReadEpub?.(book.id)}
+            className="w-full h-11 flex items-center justify-center gap-2 rounded-lg bg-amber-600 hover:bg-amber-500 active:bg-amber-700 text-white text-sm font-semibold transition-colors shadow-sm"
+          >
+            <BookOpen className="w-4 h-4" />
+            {isCompleted ? "Baca Ulang EPUB" : "Lanjut Baca EPUB"}
+          </button>
+        ) : isCompleted ? (
           <div className="w-full h-11 flex items-center justify-center gap-2 rounded-lg bg-emerald-950/40 border border-emerald-800/40 text-emerald-300 text-sm font-medium">
             <CheckCircle2 className="w-4 h-4" />
             Tamat • {book.rating ? `${"★".repeat(book.rating)}` : "Belum dinilai"}
