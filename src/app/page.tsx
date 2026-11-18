@@ -195,16 +195,25 @@ export default function HomePage() {
           <Timer className="w-10 h-10 text-slate-600 mx-auto mb-3" />
           <p className="text-sm text-slate-400">
             {filter === "all"
-              ? "Belum ada buku. Tambahkan buku pertamamu."
+              ? "Belum ada buku. Tambahkan buku pertamamu atau import EPUB."
               : "Tidak ada buku di filter ini."}
           </p>
-          <button
-            onClick={() => setShowAddModal(true)}
-            className="mt-4 h-11 inline-flex items-center gap-2 px-5 rounded-lg bg-indigo-600 text-white text-sm font-semibold hover:bg-indigo-500 transition-colors"
-          >
-            <Plus className="w-4 h-4" />
-            Tambah Buku
-          </button>
+          <div className="mt-4 flex items-center justify-center gap-3">
+            <button
+              onClick={() => setShowImportModal(true)}
+              className="h-11 inline-flex items-center gap-2 px-5 rounded-lg bg-amber-600/20 border border-amber-500/40 text-amber-300 text-sm font-semibold hover:bg-amber-600/30 transition-colors"
+            >
+              <BookOpen className="w-4 h-4" />
+              Import EPUB
+            </button>
+            <button
+              onClick={() => setShowAddModal(true)}
+              className="h-11 inline-flex items-center gap-2 px-5 rounded-lg bg-indigo-600 text-white text-sm font-semibold hover:bg-indigo-500 transition-colors"
+            >
+              <Plus className="w-4 h-4" />
+              Tambah Manual
+            </button>
+          </div>
         </div>
       ) : (
         <section className="grid gap-4 sm:grid-cols-2">
@@ -218,16 +227,18 @@ export default function HomePage() {
                   rollingSpeed={analytics?.speed ?? null}
                   onStartSession={setActiveBook}
                 />
-                {epubAvailability[book.id] && (
-                  <button
-                    onClick={() => setReadingEpubBookId(book.id)}
-                    className="absolute top-4 right-4 z-10 px-2.5 py-1 rounded-md text-[11px] font-bold bg-amber-500/20 border border-amber-500/40 text-amber-300 hover:bg-amber-500/30 flex items-center gap-1 shadow-sm transition-transform active:scale-95"
-                    title="Buka EPUB Reader"
-                  >
-                    <BookOpen className="w-3 h-3" />
-                    <span>Baca EPUB</span>
-                  </button>
-                )}
+                <div className="absolute top-4 right-4 z-10 flex items-center gap-1.5">
+                  {epubAvailability[book.id] && (
+                    <button
+                      onClick={() => setReadingEpubBookId(book.id)}
+                      className="px-2.5 py-1 rounded-md text-[11px] font-bold bg-amber-500/20 border border-amber-500/40 text-amber-300 hover:bg-amber-500/30 flex items-center gap-1 shadow-sm transition-transform active:scale-95"
+                      title="Lanjut Baca EPUB"
+                    >
+                      <BookOpen className="w-3 h-3" />
+                      <span>Lanjut Baca</span>
+                    </button>
+                  )}
+                </div>
               </div>
             );
           })}
@@ -261,6 +272,7 @@ export default function HomePage() {
       <ImportEpubModal
         isOpen={showImportModal}
         onClose={() => setShowImportModal(false)}
+        repo={repo}
         onImportSuccess={(newBookId) => {
           setBooks(repo.getBooks());
           setEpubAvailability((prev) => ({ ...prev, [newBookId]: true }));
@@ -271,6 +283,7 @@ export default function HomePage() {
       {readingEpubBookId && (
         <EpubReader
           bookId={readingEpubBookId}
+          repo={repo}
           onClose={() => {
             setReadingEpubBookId(null);
             setBooks(repo.getBooks());

@@ -11,9 +11,10 @@ interface ImportEpubModalProps {
   isOpen: boolean;
   onClose: () => void;
   onImportSuccess: (bookId: string) => void;
+  repo: typeof bookRepo;
 }
 
-export function ImportEpubModal({ isOpen, onClose, onImportSuccess }: ImportEpubModalProps) {
+export function ImportEpubModal({ isOpen, onClose, onImportSuccess, repo }: ImportEpubModalProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [parsedMeta, setParsedMeta] = useState<ParsedEpubMetadata | null>(null);
@@ -57,8 +58,8 @@ export function ImportEpubModal({ isOpen, onClose, onImportSuccess }: ImportEpub
       setSaving(true);
       setError(null);
 
-      // 1. Add book metadata to repository
-      const newBook = bookRepo.saveBook({
+      // 1. Add book metadata to shared repository
+      const newBook = repo.saveBook({
         title: parsedMeta.title,
         volume: null,
         author: parsedMeta.author,

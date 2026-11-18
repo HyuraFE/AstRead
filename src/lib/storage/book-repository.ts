@@ -40,13 +40,39 @@ const INITIAL_BOOKS: Book[] = [
   },
 ];
 
+const STORAGE_KEY_BOOKS = "astread_books";
+const STORAGE_KEY_SESSIONS = "astread_sessions";
+
 export class LocalBookRepository {
   private books: Book[];
   private sessions: ReadingSession[];
 
   constructor(initialBooks?: Book[]) {
-    this.books = initialBooks ? [...initialBooks] : [...INITIAL_BOOKS];
-    this.sessions = [];
+    if (typeof window !== "undefined") {
+      try {
+        const storedBooks = localStorage.getItem(STORAGE_KEY_BOOKS);
+        const storedSessions = localStorage.getItem(STORAGE_KEY_SESSIONS);
+        this.books = storedBooks ? JSON.parse(storedBooks) : (initialBooks ? [...initialBooks] : [...INITIAL_BOOKS]);
+        this.sessions = storedSessions ? JSON.parse(storedSessions) : [];
+      } catch {
+        this.books = initialBooks ? [...initialBooks] : [...INITIAL_BOOKS];
+        this.sessions = [];
+      }
+    } else {
+      this.books = initialBooks ? [...initialBooks] : [...INITIAL_BOOKS];
+      this.sessions = [];
+    }
+  }
+
+  private persist() {
+    if (typeof window !== "undefined") {
+      try {
+        localStorage.setItem(STORAGE_KEY_BOOKS, JSON.stringify(this.books));
+        localStorage.setItem(STORAGE_KEY_SESSIONS, JSON.stringify(this.sessions));
+      } catch (err) {
+        console.error("Failed to persist to localStorage", err);
+      }
+    }
   }
 
   getBooks(): Book[] {
@@ -71,6 +97,7 @@ export class LocalBookRepository {
           updated_at: now,
         };
         this.books[idx] = updated;
+        this.persist();
         return updated;
       }
     }
@@ -95,6 +122,7 @@ export class LocalBookRepository {
     };
 
     this.books.unshift(newBook);
+    this.persist();
     return newBook;
   }
 
@@ -118,6 +146,7 @@ export class LocalBookRepository {
 
     const idx = this.books.findIndex((b) => b.id === id);
     this.books[idx] = updated;
+    this.persist();
     return updated;
   }
 
@@ -153,6 +182,7 @@ export class LocalBookRepository {
 
     this.sessions.unshift(session);
     this.updateProgress(bookId, endPage);
+    this.persist();
     return session;
   }
 

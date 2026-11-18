@@ -11,9 +11,10 @@ import { triggerLightHaptic } from "@/lib/capacitor/native-bridge";
 interface EpubReaderProps {
   bookId: string;
   onClose: () => void;
+  repo: typeof bookRepo;
 }
 
-export function EpubReader({ bookId, onClose }: EpubReaderProps) {
+export function EpubReader({ bookId, onClose, repo }: EpubReaderProps) {
   const viewerRef = useRef<HTMLDivElement>(null);
   const bookRef = useRef<Book | null>(null);
   const renditionRef = useRef<Rendition | null>(null);
@@ -57,7 +58,7 @@ export function EpubReader({ bookId, onClose }: EpubReaderProps) {
           throw new Error("File EPUB tidak ditemukan di IndexedDB lokal");
         }
 
-        const bookMeta = bookRepo.getBookById(bookId);
+        const bookMeta = repo.getBookById(bookId);
         if (bookMeta) {
           setBookTitle(bookMeta.title);
           initialPageRef.current = bookMeta.current_page;
@@ -181,7 +182,10 @@ export function EpubReader({ bookId, onClose }: EpubReaderProps) {
 
     // Auto-record session to repository if duration or progress occurred
     if (pagesRead > 0 || duration >= 1) {
-      bookRepo.recordSession(bookId, virtualPage.current, duration);
+      repo.recordSession(bookId, virtualPage.current, duration);
+    } else {
+      // Still update progress to ensure current_page and status match
+      repo.updateProgress(bookId, virtualPage.current);
     }
 
     onClose();
@@ -440,7 +444,7 @@ export function EpubReader({ bookId, onClose }: EpubReaderProps) {
           <div className="flex items-center gap-1.5" style={{ color: activeTheme.accentColor }}>
             <Zap className="w-3.5 h-3.5" />
             <span className="font-semibold">
-              {bookRepo.getSessions(bookId)[0]?.speed_pages_per_hour?.toFixed(1) || "35.0"} hlm/jam
+              {repo.getSessions(bookId)[0]?.speed_pages_per_hour?.toFixed(1) || "35.0"} hlm/jam
             </span>
           </div>
         </div>
