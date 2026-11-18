@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { BookOpen, Plus, Clock, Timer } from "lucide-react";
+import { BookOpen, Plus, Clock, Timer, BarChart3 } from "lucide-react";
+import Link from "next/link";
 import type { Book, ReadingSession } from "../types/database";
 import { LocalBookRepository } from "../lib/storage/book-repository";
 import { calculateRollingSpeed, calculateRemainingHours, formatDuration } from "../lib/analytics/calculator";
@@ -105,13 +106,22 @@ export default function HomePage() {
             <p className="text-xs text-slate-400">Personal Book & Light Novel Tracker</p>
           </div>
         </div>
-        <button
-          onClick={() => setShowAddModal(true)}
-          className="h-11 flex items-center gap-2 px-4 rounded-lg bg-indigo-600 text-white text-sm font-semibold hover:bg-indigo-500 active:bg-indigo-700 transition-colors"
-        >
-          <Plus className="w-4 h-4" />
-          <span className="hidden sm:inline">Tambah</span>
-        </button>
+        <div className="flex items-center gap-2">
+          <Link
+            href="/stats"
+            className="h-11 w-11 flex items-center justify-center rounded-lg bg-[#12141f] border border-[#1e2235] text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
+            aria-label="Statistik"
+          >
+            <BarChart3 className="w-4 h-4" />
+          </Link>
+          <button
+            onClick={() => setShowAddModal(true)}
+            className="h-11 flex items-center gap-2 px-4 rounded-lg bg-indigo-600 text-white text-sm font-semibold hover:bg-indigo-500 active:bg-indigo-700 transition-colors"
+          >
+            <Plus className="w-4 h-4" />
+            <span className="hidden sm:inline">Tambah</span>
+          </button>
+        </div>
       </header>
 
       {/* Stats summary */}
