@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>AstRead — Editorial Reader (Light & Dark Dual Mode)</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+    .font-serif-reading {
+      font-family: 'Newsreader', Georgia, serif;
+    }
+    .font-sans-ui {
+      font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+    }
+    .font-mono-code {
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    /* THEME: WARM EDITORIAL LIGHT (Bunkobon Cream) */
+    .theme-light {
+      --bg-canvas: #f6f0e8;
+      --bg-hud: rgba(238, 229, 218, 0.92);
+      --bg-hud-card: #e4d7c6;
+      --border-color: #d8c8b4;
+      --border-subtle: #e6dac9;
+      --text-main: #2b2420;
+      --text-muted: #7d7065;
+      --text-faint: #9c8e82;
+      --accent-color: #92400e;
+      --accent-bg: #fef3c7;
+      --track-bg: #dfd0be;
+      --track-fill: #92400e;
+      --btn-bg: #f9f5f0;
+      --btn-border: #d4c3ae;
+    }
+
+    /* THEME: WARM EDITORIAL DARK (Midnight Espresso / Dark Bunkobon) */
+    .theme-dark {
+      --bg-canvas: #121010;
+      --bg-hud: rgba(24, 21, 20, 0.94);
+      --bg-hud-card: #201c1a;
+      --border-color: #322b27;
+      --border-subtle: #25201d;
+      --text-main: #e2dad2;
+      --text-muted: #9e9187;
+      --text-faint: #6e645c;
+      --accent-color: #f59e0b;
+      --accent-bg: #2d2010;
+      --track-bg: #27221f;
+      --track-fill: #d97706;
+      --btn-bg: #1c1816;
+      --btn-border: #38302b;
+    }
+
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+    /* Transitions for seamless theme toggling */
+    .reader-frame, .reader-hud, .reader-text, .reader-btn {
+      transition: background-color 0.25s ease, color 0.25s ease, border-color 0.25s ease;
+    }
+  </style>
+</head>
+<body class="bg-[#07080a] text-slate-200 font-sans-ui antialiased min-h-screen flex flex-col">
+
+  <!-- Header Bar -->
+  <header class="border-b border-slate-800 bg-[#0c0d12]/90 backdrop-blur sticky top-0 z-50 px-6 py-4">
+    <div class="max-w-6xl mx-auto flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div>
+        <div class="flex items-center gap-2">
+          <span class="px-2 py-0.5 text-[11px] font-bold tracking-wider uppercase rounded bg-amber-500/20 text-amber-400 border border-amber-500/30">Interactive Prototype</span>
+          <span class="text-xs text-slate-400">• Arah B: Editorial Paper (Dual Mode)</span>
+        </div>
+        <h1 class="text-lg font-bold text-white mt-1">Warm Bookcraft — Light & Dark Mode Interactive Showcase</h1>
+      </div>
+      
+      <!-- Interactive Theme Switcher Button on Header -->
+      <div class="flex items-center gap-3">
+        <span class="text-xs text-slate-400 hidden sm:inline">Ubah Tema:</span>
+        <div class="flex bg-slate-900 p-1 rounded-xl border border-slate-800">
+          <button id="btn-toggle-light" onclick="setTheme('light')" class="px-3 py-1.5 rounded-lg text-xs font-medium flex items-center gap-1.5 transition-all text-slate-400 hover:text-white">
+            <span>☀️</span>
+            <span>Warm Cream (Siang)</span>
+          </button>
+          <button id="btn-toggle-dark" onclick="setTheme('dark')" class="px-3 py-1.5 rounded-lg text-xs font-medium flex items-center gap-1.5 transition-all bg-amber-500/20 text-amber-300 border border-amber-500/30">
+            <span>🌙</span>
+            <span>Midnight Espresso (Malam)</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Showcase Content -->
+  <main class="flex-1 max-w-6xl w-full mx-auto px-6 py-8 flex flex-col lg:flex-row items-center justify-center gap-10">
+
+    <!-- Mobile Device Preview Mockup -->
+    <div class="flex flex-col items-center">
+      <div class="text-center mb-3">
+        <span class="text-xs font-mono text-slate-400 uppercase tracking-widest">Mobile Device Viewport</span>
+        <div class="text-[11px] text-slate-500">Tap ikon "Aa" di pojok kanan atas layar HP untuk test kontrol reader</div>
+      </div>
+
+      <!-- Phone Frame Container -->
+      <div id="phone-frame" class="reader-frame theme-dark w-[340px] sm:w-[360px] h-[640px] rounded-[42px] border-[6px] border-slate-800 shadow-[0_25px_60px_-15px_rgba(0,0,0,0.7)] flex flex-col relative overflow-hidden" style="background-color: var(--bg-canvas);">
+        
+        <!-- Status Bar Simulation -->
+        <div class="reader-hud pt-2 px-6 pb-1 flex justify-between items-center text-[10px] font-mono select-none" style="background-color: var(--bg-hud); color: var(--text-faint); border-bottom: 1px solid var(--border-subtle);">
+          <span>09:41</span>
+          <div class="flex items-center gap-1.5">
+            <span>5G</span>
+            <span>98%</span>
+          </div>
+        </div>
+
+        <!-- Top Header Navigation & Controls -->
+        <div class="reader-hud px-5 py-2.5 flex items-center justify-between select-none relative z-20" style="background-color: var(--bg-hud); border-bottom: 1px solid var(--border-color);">
+          <div class="flex items-center gap-2.5">
+            <button class="reader-btn w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold shadow-sm" style="background-color: var(--btn-bg); border: 1px solid var(--btn-border); color: var(--text-muted);">
+              ←
+            </button>
+            <div>
+              <div class="text-[11px] font-serif-reading font-semibold truncate max-w-[150px]" style="color: var(--text-main);">Buying My Classmate</div>
+              <div class="text-[9px] font-mono truncate" style="color: var(--text-faint);">Vol. 2 • Bab 12</div>
+            </div>
+          </div>
+
+          <div class="flex items-center gap-2">
+            <!-- Active Session Timer -->
+            <div class="flex items-center gap-1 text-[10px] font-mono px-2 py-0.5 rounded-full" style="background-color: var(--accent-bg); color: var(--accent-color); border: 1px solid var(--border-color);">
+              <span>⏱️</span>
+              <span class="font-semibold">22m</span>
+            </div>
+
+            <!-- Aa Setting Button -->
+            <button id="reader-settings-btn" onclick="toggleMenu()" class="reader-btn w-8 h-8 rounded-full flex items-center justify-center text-xs font-semibold shadow-sm" style="background-color: var(--btn-bg); border: 1px solid var(--btn-border); color: var(--text-main);">
+              Aa
+            </button>
+          </div>
+        </div>
+
+        <!-- Floating Reader Quick Setting Sheet (Dropdown) -->
+        <div id="reader-settings-panel" class="hidden absolute top-[85px] left-4 right-4 z-40 p-4 rounded-2xl shadow-xl transition-all" style="background-color: var(--bg-hud-card); border: 1px solid var(--border-color);">
+          <div class="flex justify-between items-center mb-3">
+            <span class="text-xs font-bold" style="color: var(--text-main);">Pengaturan Tampilan</span>
+            <button onclick="toggleMenu()" class="text-xs font-bold" style="color: var(--text-muted);">✕</button>
+          </div>
+          
+          <!-- Theme Picker in Drawer -->
+          <div class="mb-3">
+            <span class="text-[10px] font-mono uppercase block mb-1.5" style="color: var(--text-muted);">Mode Warna</span>
+            <div class="grid grid-cols-2 gap-2">
+              <button onclick="setTheme('light')" class="py-2 px-3 rounded-lg text-xs font-medium flex items-center justify-center gap-1.5 border" style="background-color: #f6f0e8; color: #2b2420; border-color: #d8c8b4;">
+                <span>☀️</span> Warm Cream
+              </button>
+              <button onclick="setTheme('dark')" class="py-2 px-3 rounded-lg text-xs font-medium flex items-center justify-center gap-1.5 border" style="background-color: #121010; color: #e2dad2; border-color: #38302b;">
+                <span>🌙</span> Midnight
+              </button>
+            </div>
+          </div>
+
+          <!-- Font Size Controls -->
+          <div>
+            <div class="flex justify-between text-[10px] font-mono mb-1" style="color: var(--text-muted);">
+              <span>Ukuran Huruf</span>
+              <span id="font-size-label">15px</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <button onclick="changeFontSize(-1)" class="w-8 h-7 rounded flex items-center justify-center text-xs font-bold border" style="background-color: var(--btn-bg); border-color: var(--border-color); color: var(--text-main);">-</button>
+              <div class="flex-1 h-1 rounded-full overflow-hidden" style="background-color: var(--track-bg);">
+                <div id="font-size-bar" class="h-full w-[50%]" style="background-color: var(--accent-color);"></div>
+              </div>
+              <button onclick="changeFontSize(1)" class="w-8 h-7 rounded flex items-center justify-center text-xs font-bold border" style="background-color: var(--btn-bg); border-color: var(--border-color); color: var(--text-main);">+</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Book Text Canvas (Scrollable Reader Body) -->
+        <div id="reader-content" class="reader-text flex-1 px-6 py-5 overflow-y-auto no-scrollbar font-serif-reading text-[15px] leading-[1.85]" style="color: var(--text-main);">
+          
+          <div class="text-center my-3 select-none">
+            <span class="text-[10px] font-mono tracking-widest uppercase block" style="color: var(--text-muted);">Bab 12</span>
+            <h2 class="text-base font-semibold italic mt-0.5" style="color: var(--text-main);">Pertemuan di Tangga Sore Hari</h2>
+            <div class="w-10 h-[1px] mx-auto mt-2 mb-4" style="background-color: var(--border-color);"></div>
+          </div>
+
+          <p class="mb-4 text-justify indent-6">
+            Miyagi bersandar pada dinding lorong lantai tiga sekolah yang mulai lengang. Suara gemerisik daun sakura tertiup angin senja terdengar sayup dari arah jendela terbuka. Uang lima ribu yen di dalam saku seragamku terasa kaku dan berat, seakan selalu mengingatkanku pada perjanjian tanpa nama yang kami mulai sejak awal semester ini.
+          </p>
+
+          <p class="mb-4 text-justify indent-6">
+            "Kamu terlambat empat menit," ucap Miyagi lirih tanpa menoleh sedikit pun. Matanya terpaku menatap gumpalan awan jingga yang perlahan terkikis malam.
+          </p>
+
+          <p class="mb-4 text-justify indent-6">
+            "Tadi ada piket kelas membersihkan laboratorium kimia," sahutku pelan sembari melangkah maju dua langkah.
+          </p>
+
+          <p class="mb-4 text-justify indent-6">
+            Ada keheningan singkat di antara kami. Hanya desau angin dan gemeretak sepatu kami di atas lantai kayu tua. Ketika aku berhenti tepat di samping bahunya, aroma sabun mandi yang lembut dan sangat familiar itu kembali tercium. Miyagi melirik sebentar ke arah kantong seragamku, lalu perlahan mengulurkan tangannya tanpa berkata apa-apa lagi.
+          </p>
+
+          <div class="text-center py-6 text-[11px] font-mono" style="color: var(--text-faint);">
+            • • • Lanjut ke Halaman 143 • • •
+          </div>
+        </div>
+
+        <!-- Bottom Reader HUD / Progress Footer -->
+        <div class="reader-hud p-3.5 border-t flex flex-col gap-2 select-none relative z-20" style="background-color: var(--bg-hud); border-color: var(--border-color);">
+          <div class="flex items-center justify-between text-[10px] font-mono">
+            <div class="flex items-center gap-1.5" style="color: var(--text-muted);">
+              <span>Hlm 142 dari 345</span>
+              <span>•</span>
+              <span class="font-semibold" style="color: var(--accent-color);">41%</span>
+            </div>
+            <div style="color: var(--text-faint);">
+              Sisa perkiraan: <strong style="color: var(--text-main);">1j 42m</strong>
+            </div>
+          </div>
+
+          <!-- Progress Bar Line -->
+          <div class="w-full h-1.5 rounded-full overflow-hidden" style="background-color: var(--track-bg);">
+            <div class="h-full rounded-full transition-all duration-300" style="background-color: var(--track-fill); width: 41%;"></div>
+          </div>
+
+          <!-- Quick Action Buttons -->
+          <div class="flex justify-between items-center pt-1 text-[10px] font-mono" style="color: var(--text-muted);">
+            <button class="flex items-center gap-1 hover:opacity-80 transition-opacity">
+              <span>📑</span>
+              <span>Daftar Bab (TOC)</span>
+            </button>
+            <div class="flex items-center gap-1" style="color: var(--accent-color);">
+              <span>⚡</span>
+              <span>38.2 hlm/jam</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Explanation & Features Panel -->
+    <div class="flex-1 max-w-lg flex flex-col gap-6">
+      
+      <div class="bg-[#0f1118] border border-slate-800 rounded-2xl p-6">
+        <div class="flex items-center gap-2 mb-3">
+          <span class="text-lg">🎨</span>
+          <h2 class="text-base font-bold text-white">Konsep Arah B: Dual-Mode Editorial</h2>
+        </div>
+        <p class="text-xs text-slate-300 leading-relaxed mb-4">
+          Menggabungkan kehangatan buku fisik dengan kenyamanan layar HP modern. Dua mode warna ini dibuat khusus untuk pembaca novel panjang agar mata tidak cepat lelah:
+        </p>
+
+        <div class="space-y-3 text-xs">
+          <div class="p-3.5 rounded-xl border transition-all" id="desc-light-box" style="background: rgba(246, 240, 232, 0.05); border-color: #d8c8b4;">
+            <div class="flex items-center justify-between mb-1">
+              <span class="font-bold text-amber-300 flex items-center gap-1.5">
+                <span>☀️</span> 1. Mode Warm Cream (Bunkobon Paper)
+              </span>
+              <span class="text-[10px] text-slate-400 font-mono">Siang Hari / Outdoor</span>
+            </div>
+            <p class="text-slate-400 leading-relaxed">
+              Latar kertas krem kekuningan hangat (<code class="text-amber-300">#f6f0e8</code>) dengan tinta dark chocolate/espresso (<code class="text-amber-300">#2b2420</code>). Tidak ada kontras putih silau yang menusuk mata saat terkena cahaya siang.
+            </p>
+          </div>
+
+          <div class="p-3.5 rounded-xl border transition-all" id="desc-dark-box" style="background: rgba(18, 16, 16, 0.6); border-color: #f59e0b;">
+            <div class="flex items-center justify-between mb-1">
+              <span class="font-bold text-amber-400 flex items-center gap-1.5">
+                <span>🌙</span> 2. Mode Midnight Espresso (Dark Paper)
+              </span>
+              <span class="text-[10px] text-slate-400 font-mono">Malam Hari / Redup</span>
+            </div>
+            <p class="text-slate-400 leading-relaxed">
+              Bukan sekadar abu-abu dingin biasa, melainkan hitam kecokelatan hangat (<code class="text-amber-400">#121010</code>) dengan teks ivory cream (<code class="text-amber-400">#e2dad2</code>). Membuat mata rileks saat membaca sebelum tidur tanpa merusak siklus melatonin.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- UX Controls Specs -->
+      <div class="bg-[#0f1118] border border-slate-800 rounded-2xl p-6">
+        <h3 class="text-sm font-bold text-white mb-3 flex items-center gap-2">
+          <span>📱</span> Fitur Sentuhan & Auto-Tracking Reader
+        </h3>
+        <ul class="text-xs text-slate-400 space-y-2.5">
+          <li class="flex items-start gap-2">
+            <span class="text-amber-400 font-bold">•</span>
+            <span><strong>Tap Tengah Layar:</strong> Memunculkan/menyembunyikan HUD header dan footer secara mulus (Distraction-Free Mode).</span>
+          </li>
+          <li class="flex items-start gap-2">
+            <span class="text-amber-400 font-bold">•</span>
+            <span><strong>Menu Font & Tema (Aa):</strong> Ukuran huruf fleksibel (14px - 22px) dan pergantian tema instan 1-tap.</span>
+          </li>
+          <li class="flex items-start gap-2">
+            <span class="text-amber-400 font-bold">•</span>
+            <span><strong>Zero-Friction Auto Session:</strong> Timer di pojok atas (<code class="text-amber-300">⏱️ 22m</code>) dan metrik kecepatan berjalan otomatis tanpa perlu input manual.</span>
+          </li>
+        </ul>
+      </div>
+
+    </div>
+
+  </main>
+
+  <script>
+    let currentTheme = 'dark';
+    let currentFontSize = 15;
+
+    function setTheme(mode) {
+      currentTheme = mode;
+      const phone = document.getElementById('phone-frame');
+      const btnLight = document.getElementById('btn-toggle-light');
+      const btnDark = document.getElementById('btn-toggle-dark');
+      const descLight = document.getElementById('desc-light-box');
+      const descDark = document.getElementById('desc-dark-box');
+
+      if (mode === 'light') {
+        phone.classList.remove('theme-dark');
+        phone.classList.add('theme-light');
+
+        btnLight.className = "px-3 py-1.5 rounded-lg text-xs font-medium flex items-center gap-1.5 transition-all bg-amber-500/20 text-amber-300 border border-amber-500/30";
+        btnDark.className = "px-3 py-1.5 rounded-lg text-xs font-medium flex items-center gap-1.5 transition-all text-slate-400 hover:text-white";
+
+        descLight.style.borderColor = '#92400e';
+        descDark.style.borderColor = '#322b27';
+      } else {
+        phone.classList.remove('theme-light');
+        phone.classList.add('theme-dark');
+
+        btnDark.className = "px-3 py-1.5 rounded-lg text-xs font-medium flex items-center gap-1.5 transition-all bg-amber-500/20 text-amber-300 border border-amber-500/30";
+        btnLight.className = "px-3 py-1.5 rounded-lg text-xs font-medium flex items-center gap-1.5 transition-all text-slate-400 hover:text-white";
+
+        descDark.style.borderColor = '#f59e0b';
+        descLight.style.borderColor = '#d8c8b4';
+      }
+    }
+
+    function toggleMenu() {
+      const panel = document.getElementById('reader-settings-panel');
+      panel.classList.toggle('hidden');
+    }
+
+    function changeFontSize(delta) {
+      currentFontSize = Math.max(12, Math.min(22, currentFontSize + delta));
+      const content = document.getElementById('reader-content');
+      content.style.fontSize = currentFontSize + 'px';
+      document.getElementById('font-size-label').textContent = currentFontSize + 'px';
+      
+      const percent = ((currentFontSize - 12) / (22 - 12)) * 100;
+      document.getElementById('font-size-bar').style.width = percent + '%';
+    }
+
+    // Set initial dark theme
+    setTheme('dark');
+  </script>
+
+</body>
+</html>

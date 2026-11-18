@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>AstRead — Reader Prototype Direction Showcase</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&family=JetBrains+Mono:wght@400;600&display=swap');
+
+    .font-serif-reading {
+      font-family: 'Newsreader', Georgia, serif;
+    }
+    .font-sans-ui {
+      font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+    }
+    .font-mono-code {
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .font-display {
+      font-family: 'Cinzel', serif;
+    }
+
+    /* Direction specific reader skins */
+    .theme-oled {
+      --bg: #000000;
+      --text: #d4d4d8;
+      --text-muted: #71717a;
+      --card: #0a0a0c;
+      --border: #18181b;
+      --accent: #6366f1;
+    }
+    .theme-warm {
+      --bg: #f5efe6;
+      --text: #2c2523;
+      --text-muted: #786c65;
+      --card: #eae0d2;
+      --border: #dcd0bf;
+      --accent: #b45309;
+    }
+    .theme-slate {
+      --bg: #090a0f;
+      --text: #e2e8f0;
+      --text-muted: #64748b;
+      --card: #12141f;
+      --border: #1e2235;
+      --accent: #06b6d4;
+    }
+
+    /* Hide scrollbar for clean UI */
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+  </style>
+</head>
+<body class="bg-[#050608] text-slate-200 font-sans-ui antialiased min-h-screen pb-16">
+
+  <!-- Main Showcase Header -->
+  <header class="border-b border-slate-800 bg-[#090a0f]/90 backdrop-blur sticky top-0 z-50 px-6 py-4">
+    <div class="max-w-7xl mx-auto flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div>
+        <div class="flex items-center gap-2">
+          <span class="px-2 py-0.5 text-[11px] font-bold tracking-wider uppercase rounded bg-indigo-500/20 text-indigo-400 border border-indigo-500/30">Phase 4 Prototype</span>
+          <span class="text-xs text-slate-400">• Mobile EPUB Reader Directions</span>
+        </div>
+        <h1 class="text-xl font-bold text-white mt-1">AstRead — Reader UI Prototype Showcase</h1>
+      </div>
+      <div class="flex items-center gap-3 text-xs">
+        <span class="text-slate-400">Pilih arah desain yang paling nyaman untuk membaca novel di HP:</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Prototype Cards Grid -->
+  <main class="max-w-7xl mx-auto px-6 py-8">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+
+      <!-- ========================================== -->
+      <!-- DIRECTION A: OLED Obsidian Minimal (Modern) -->
+      <!-- ========================================== -->
+      <section class="flex flex-col bg-[#0c0d14] rounded-2xl border border-slate-800 overflow-hidden shadow-2xl">
+        <div class="p-5 border-b border-slate-800/80 bg-slate-900/40">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-xs font-mono font-bold uppercase text-indigo-400 tracking-wider">Arah A • OLED Obsidian</span>
+            <span class="text-[11px] px-2 py-0.5 rounded-full bg-slate-800 text-slate-300">AMOLED Friendly</span>
+          </div>
+          <h2 class="text-base font-semibold text-white">Pure Black & Neon Accent</h2>
+          <p class="text-xs text-slate-400 mt-1 leading-relaxed">
+            Latar hitam pekat 100% (#000000) hemat baterai layar OLED HP. Tipografi tajam dengan font serif editorial dan floating pill HUD.
+          </p>
+        </div>
+
+        <!-- Phone Mockup Container -->
+        <div class="p-6 flex justify-center bg-[#07080c] flex-1">
+          <!-- Mobile Screen Frame (360x640 ratio approx) -->
+          <div class="w-[320px] h-[580px] rounded-[36px] bg-black border-4 border-slate-800 shadow-2xl flex flex-col relative overflow-hidden theme-oled">
+            
+            <!-- Top Status Bar & Reader HUD -->
+            <div class="pt-3 px-5 pb-2 bg-gradient-to-b from-black via-black/90 to-transparent flex items-center justify-between z-10 border-b border-zinc-900">
+              <div class="flex items-center gap-2">
+                <button class="w-7 h-7 rounded-full bg-zinc-900 flex items-center justify-center text-zinc-400 text-xs hover:text-white">←</button>
+                <div class="text-[10px] text-zinc-400 truncate max-w-[140px]">Buying My Classmate...</div>
+              </div>
+              <div class="flex items-center gap-2">
+                <span class="text-[10px] font-mono text-indigo-400 bg-indigo-950/60 px-1.5 py-0.5 rounded border border-indigo-900/50">⏱️ 18m</span>
+                <button class="w-6 h-6 rounded-full bg-zinc-900 flex items-center justify-center text-zinc-400 text-xs">Aa</button>
+              </div>
+            </div>
+
+            <!-- Reading Body Area -->
+            <div class="flex-1 px-5 py-4 overflow-y-auto no-scrollbar font-serif-reading text-[15px] leading-[1.8] text-zinc-300">
+              <div class="text-center my-2">
+                <span class="text-[10px] font-mono tracking-widest text-zinc-600 uppercase">Bab 12 • Pertemuan di Tangga</span>
+              </div>
+              <p class="mb-4 text-justify indent-6">
+                Miyagi bersandar pada dinding lorong sekolah yang mulai sepi. Suara gemerisik dedaunan tertiup angin sore terdengar samar dari jendela lantai tiga. Uang lima ribu yen itu masih berada di dalam sakuku, terasa berat seperti sebuah janji yang belum terselesaikan.
+              </p>
+              <p class="mb-4 text-justify indent-6">
+                "Kamu terlambat tiga menit," ucapnya dingin tanpa menoleh, pandangannya lurus menatap langit senja berwarna tembaga.
+              </p>
+              <p class="mb-4 text-justify indent-6">
+                Aku hanya bisa menghela napas panjang sembari melangkah mendekatinya. Ada aroma sabun samar yang familiar ketika aku berdiri tepat di samping bahunya.
+              </p>
+            </div>
+
+            <!-- Bottom Floating Progress HUD -->
+            <div class="p-3 bg-gradient-to-t from-black via-black/95 to-transparent border-t border-zinc-900 flex flex-col gap-1.5 z-10">
+              <div class="flex items-center justify-between text-[10px] text-zinc-500 font-mono">
+                <span>Hlm 142 dari 345</span>
+                <span class="text-indigo-400 font-semibold">41% (Sisa 1j 42m)</span>
+              </div>
+              <!-- Progress bar -->
+              <div class="w-full h-1 bg-zinc-900 rounded-full overflow-hidden">
+                <div class="h-full bg-indigo-500 w-[41%] rounded-full"></div>
+              </div>
+              <div class="flex justify-between items-center pt-1 text-[9px] text-zinc-600">
+                <span>TOC • Daftar Bab</span>
+                <span>Speed: 38 hlm/jam</span>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <div class="p-4 bg-[#090a0f] border-t border-slate-800 text-xs text-slate-400">
+          <strong class="text-slate-200">Kelebihan:</strong> Zero eye-strain di kamar gelap, kontras tinggi, hemat baterai maksimal di HP.
+        </div>
+      </section>
+
+
+      <!-- ========================================== -->
+      <!-- DIRECTION B: Warm Editorial Paper (Bookish)-->
+      <!-- ========================================== -->
+      <section class="flex flex-col bg-[#0c0d14] rounded-2xl border border-slate-800 overflow-hidden shadow-2xl">
+        <div class="p-5 border-b border-slate-800/80 bg-slate-900/40">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-xs font-mono font-bold uppercase text-amber-500 tracking-wider">Arah B • Warm Bookcraft</span>
+            <span class="text-[11px] px-2 py-0.5 rounded-full bg-amber-950/40 text-amber-300 border border-amber-900/40">Novel Klasik</span>
+          </div>
+          <h2 class="text-base font-semibold text-white">Japanese Editorial & Cream Texture</h2>
+          <p class="text-xs text-slate-400 mt-1 leading-relaxed">
+            Nuansa buku kertas fisik Jepang (Kanso/Bunkobon). Warna krem hangat lembut di mata untuk membaca maraton di siang hari.
+          </p>
+        </div>
+
+        <!-- Phone Mockup Container -->
+        <div class="p-6 flex justify-center bg-[#07080c] flex-1">
+          <!-- Mobile Screen Frame -->
+          <div class="w-[320px] h-[580px] rounded-[36px] bg-[#f5efe6] border-4 border-slate-800 shadow-2xl flex flex-col relative overflow-hidden theme-warm text-[#2c2523]">
+            
+            <!-- Top Status Bar & Reader HUD -->
+            <div class="pt-3 px-5 pb-2 bg-[#eae0d2]/80 backdrop-blur border-b border-[#dcd0bf] flex items-center justify-between z-10">
+              <div class="flex items-center gap-2">
+                <button class="w-7 h-7 rounded-full bg-[#f5efe6] border border-[#dcd0bf] flex items-center justify-center text-[#786c65] text-xs">←</button>
+                <div class="text-[10px] text-[#786c65] font-serif-reading font-semibold truncate max-w-[140px]">Buying My Classmate</div>
+              </div>
+              <div class="flex items-center gap-2">
+                <span class="text-[10px] font-mono text-amber-800 bg-amber-100/80 px-1.5 py-0.5 rounded border border-amber-200">⏱️ 18m</span>
+                <button class="w-6 h-6 rounded-full bg-[#f5efe6] border border-[#dcd0bf] flex items-center justify-center text-[#786c65] text-xs">Aa</button>
+              </div>
+            </div>
+
+            <!-- Reading Body Area -->
+            <div class="flex-1 px-5 py-4 overflow-y-auto no-scrollbar font-serif-reading text-[15px] leading-[1.85] text-[#2c2523]">
+              <div class="text-center my-2">
+                <span class="text-[11px] tracking-widest text-[#786c65] italic">第十二章 • Pertemuan di Tangga</span>
+                <div class="w-8 h-[1px] bg-[#dcd0bf] mx-auto mt-1 mb-3"></div>
+              </div>
+              <p class="mb-4 text-justify indent-6">
+                Miyagi bersandar pada dinding lorong sekolah yang mulai sepi. Suara gemerisik dedaunan tertiup angin sore terdengar samar dari jendela lantai tiga. Uang lima ribu yen itu masih berada di dalam sakuku, terasa berat seperti sebuah janji yang belum terselesaikan.
+              </p>
+              <p class="mb-4 text-justify indent-6">
+                "Kamu terlambat tiga menit," ucapnya dingin tanpa menoleh, pandangannya lurus menatap langit senja berwarna tembaga.
+              </p>
+              <p class="mb-4 text-justify indent-6">
+                Aku hanya bisa menghela napas panjang sembari melangkah mendekatinya. Ada aroma sabun samar yang familiar ketika aku berdiri tepat di samping bahunya.
+              </p>
+            </div>
+
+            <!-- Bottom Floating Progress HUD -->
+            <div class="p-3 bg-[#eae0d2]/90 border-t border-[#dcd0bf] flex flex-col gap-1.5 z-10">
+              <div class="flex items-center justify-between text-[10px] text-[#786c65] font-mono">
+                <span>Halaman 142</span>
+                <span class="text-amber-900 font-semibold">41% • Sisa 103 mnt</span>
+              </div>
+              <div class="w-full h-1 bg-[#dcd0bf] rounded-full overflow-hidden">
+                <div class="h-full bg-amber-700 w-[41%] rounded-full"></div>
+              </div>
+              <div class="flex justify-between items-center pt-1 text-[9px] text-[#8c7f76]">
+                <span>Daftar Bab (TOC)</span>
+                <span>Speed: 38 hlm/jam</span>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <div class="p-4 bg-[#090a0f] border-t border-slate-800 text-xs text-slate-400">
+          <strong class="text-slate-200">Kelebihan:</strong> Sensasi membaca buku kertas asli, visual elegan dan hangat, tidak menyilaukan saat siang hari.
+        </div>
+      </section>
+
+
+      <!-- ========================================== -->
+      <!-- DIRECTION C: Deep Slate Neobrutalism (Tech) -->
+      <!-- ========================================== -->
+      <section class="flex flex-col bg-[#0c0d14] rounded-2xl border border-slate-800 overflow-hidden shadow-2xl">
+        <div class="p-5 border-b border-slate-800/80 bg-slate-900/40">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-xs font-mono font-bold uppercase text-cyan-400 tracking-wider">Arah C • Slate Neobrutal</span>
+            <span class="text-[11px] px-2 py-0.5 rounded-full bg-cyan-950/40 text-cyan-300 border border-cyan-900/40">AstRead Native</span>
+          </div>
+          <h2 class="text-base font-semibold text-white">Subtle Navy & Cyan Analytics</h2>
+          <p class="text-xs text-slate-400 mt-1 leading-relaxed">
+            Paling selaras dengan tema Dashboard utama AstRead saat ini (#090a0f dan #12141f). Elemen UI modern dengan aksen cyan dan panel HUD semi-transparan.
+          </p>
+        </div>
+
+        <!-- Phone Mockup Container -->
+        <div class="p-6 flex justify-center bg-[#07080c] flex-1">
+          <!-- Mobile Screen Frame -->
+          <div class="w-[320px] h-[580px] rounded-[36px] bg-[#090a0f] border-4 border-[#1e2235] shadow-2xl flex flex-col relative overflow-hidden theme-slate text-slate-200">
+            
+            <!-- Top Status Bar & Reader HUD -->
+            <div class="pt-3 px-5 pb-2 bg-[#12141f]/90 backdrop-blur border-b border-[#1e2235] flex items-center justify-between z-10">
+              <div class="flex items-center gap-2">
+                <button class="w-7 h-7 rounded-lg bg-[#1a1e30] border border-[#2a3050] flex items-center justify-center text-slate-400 text-xs">←</button>
+                <div class="text-[10px] text-slate-300 font-medium truncate max-w-[130px]">Vol 2 • Buying My Classmate</div>
+              </div>
+              <div class="flex items-center gap-2">
+                <span class="text-[10px] font-mono text-cyan-300 bg-cyan-950/60 px-2 py-0.5 rounded-md border border-cyan-800/50">18:42</span>
+                <button class="w-6 h-6 rounded-lg bg-[#1a1e30] border border-[#2a3050] flex items-center justify-center text-slate-300 text-xs">⚙️</button>
+              </div>
+            </div>
+
+            <!-- Reading Body Area -->
+            <div class="flex-1 px-5 py-4 overflow-y-auto no-scrollbar font-serif-reading text-[15px] leading-[1.8] text-slate-300">
+              <div class="flex items-center justify-between border-b border-[#1e2235] pb-1.5 mb-3">
+                <span class="text-[10px] font-mono text-slate-500 uppercase">Bab 12</span>
+                <span class="text-[10px] font-mono text-cyan-400">Pace: 38.5 h/h</span>
+              </div>
+              <p class="mb-4 text-justify indent-6">
+                Miyagi bersandar pada dinding lorong sekolah yang mulai sepi. Suara gemerisik dedaunan tertiup angin sore terdengar samar dari jendela lantai tiga. Uang lima ribu yen itu masih berada di dalam sakuku, terasa berat seperti sebuah janji yang belum terselesaikan.
+              </p>
+              <p class="mb-4 text-justify indent-6">
+                "Kamu terlambat tiga menit," ucapnya dingin tanpa menoleh, pandangannya lurus menatap langit senja berwarna tembaga.
+              </p>
+              <p class="mb-4 text-justify indent-6">
+                Aku hanya bisa menghela napas panjang sembari melangkah mendekatinya. Ada aroma sabun samar yang familiar ketika aku berdiri tepat di samping bahunya.
+              </p>
+            </div>
+
+            <!-- Bottom Floating Progress HUD -->
+            <div class="p-3 bg-[#12141f] border-t border-[#1e2235] flex flex-col gap-1.5 z-10">
+              <div class="flex items-center justify-between text-[10px] font-mono">
+                <span class="text-slate-400">142 / 345 hlm</span>
+                <span class="text-cyan-400 font-semibold">41.2% (1.7 Jam lagi)</span>
+              </div>
+              <div class="w-full h-1.5 bg-[#1a1e30] rounded-full overflow-hidden">
+                <div class="h-full bg-cyan-500 w-[41%] rounded-full"></div>
+              </div>
+              <div class="flex justify-between items-center pt-1 text-[9px] text-slate-500 font-mono">
+                <span>📑 Daftar Isi</span>
+                <span>🔥 3 Hari Streak</span>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <div class="p-4 bg-[#090a0f] border-t border-slate-800 text-xs text-slate-400">
+          <strong class="text-slate-200">Kelebihan:</strong> Paling konsisten dengan design system AstRead yang sudah ada, analytics langsung terintegrasi di HUD.
+        </div>
+      </section>
+
+    </div>
+
+    <!-- Comparative Table of Directions -->
+    <div class="mt-12 bg-[#0c0d14] rounded-2xl border border-slate-800 p-6">
+      <h3 class="text-base font-bold text-white mb-4">Perbandingan Fitur 3 Arah Desain Reader</h3>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
+        <div class="p-4 rounded-xl bg-slate-900/60 border border-slate-800">
+          <h4 class="font-bold text-indigo-400 mb-1">Arah A (OLED Obsidian)</h4>
+          <p class="text-slate-400">Cocok buat kamu yang sering baca malam-malam sebelum tidur. Kontras maksimal, bezel hitam menyatu dengan layar HP.</p>
+        </div>
+        <div class="p-4 rounded-xl bg-slate-900/60 border border-slate-800">
+          <h4 class="font-bold text-amber-400 mb-1">Arah B (Warm Bookcraft)</h4>
+          <p class="text-slate-400">Cocok buat kamu yang menyukai sensasi buku fisik / light novel cetak jepang dengan tekstur kertas hangat.</p>
+        </div>
+        <div class="p-4 rounded-xl bg-slate-900/60 border border-slate-800">
+          <h4 class="font-bold text-cyan-400 mb-1">Arah C (Slate Neobrutal)</h4>
+          <p class="text-slate-400">Satu kesatuan desain dengan tracker dashboard AstRead, metrik kecepatan dan streak langsung kelihatan di HUD bawah.</p>
+        </div>
+      </div>
+      <div class="mt-5 p-3 rounded-lg bg-indigo-950/40 border border-indigo-900/50 text-indigo-300 text-xs flex items-center justify-between">
+        <span>💡 <em>Catatan:</em> Nantinya kita juga bisa menyediakan tombol toggle di menu pengaturan font untuk berganti ketiga tema ini secara fleksibel!</span>
+      </div>
+    </div>
+  </main>
+
+</body>
+</html>
