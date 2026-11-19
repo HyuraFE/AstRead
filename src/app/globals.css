@@ -1,12 +1,17 @@
+@import url('https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;0,6..72,700;1,6..72,400&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
 @import "tailwindcss";
 
 :root {
-  --background: #090a0f;
-  --foreground: #f1f5f9;
-  --surface: #12141f;
-  --surface-border: #1e2235;
-  --accent: #6366f1;
-  --accent-light: #818cf8;
+  --background: #0f0e0c;
+  --foreground: #f5f2eb;
+  --surface: #171512;
+  --surface-border: #29241d;
+  --accent: #d97706;
+  --accent-light: #f59e0b;
+}
+
+.font-editorial {
+  font-family: 'Newsreader', Georgia, serif;
 }
 
 /* Safe area padding utilities for mobile notches & status bars */

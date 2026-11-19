@@ -2,6 +2,7 @@ node_modules/
 .next/
 out/
 build/
+design-demos/
 .superpowers/
 docs/superpowers/
 .agent/
