@@ -218,7 +218,7 @@ export function EpubReader({ bookId, onClose, repo }: EpubReaderProps) {
     >
       {/* Top HUD (Distraction-Free) */}
       <header
-        className={`px-4 py-3 flex items-center justify-between border-b transition-all duration-300 z-30 ${
+        className={`px-4 pt-[max(0.75rem,env(safe-area-inset-top))] pb-3 flex items-center justify-between border-b transition-all duration-300 z-30 ${
           showHUD ? "translate-y-0 opacity-100" : "-translate-y-full opacity-0 pointer-events-none"
         }`}
         style={{
@@ -280,7 +280,7 @@ export function EpubReader({ bookId, onClose, repo }: EpubReaderProps) {
       {/* Settings Drawer Dropdown */}
       {showSettingsDrawer && showHUD && (
         <div
-          className="absolute top-16 right-4 z-40 p-4 rounded-2xl shadow-2xl border w-72 flex flex-col gap-3 animate-in fade-in zoom-in-95"
+          className="absolute top-[max(4.5rem,calc(env(safe-area-inset-top)+3.5rem))] right-4 z-40 p-4 rounded-2xl shadow-2xl border w-72 flex flex-col gap-3 animate-in fade-in zoom-in-95"
           style={{
             backgroundColor: activeTheme.bgHudCard,
             borderColor: activeTheme.borderColor,
@@ -430,7 +430,7 @@ export function EpubReader({ bookId, onClose, repo }: EpubReaderProps) {
 
       {/* Bottom HUD (Distraction-Free) */}
       <footer
-        className={`px-4 py-3 border-t flex flex-col gap-2 transition-all duration-300 z-30 ${
+        className={`px-4 pt-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] border-t flex flex-col gap-2 transition-all duration-300 z-30 ${
           showHUD ? "translate-y-0 opacity-100" : "translate-y-full opacity-0 pointer-events-none"
         }`}
         style={{

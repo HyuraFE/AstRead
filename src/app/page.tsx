@@ -111,7 +111,7 @@ export default function HomePage() {
   const filteredBooks = filter === "all" ? books : books.filter((b) => b.status === filter);
 
   return (
-    <main className="min-h-screen px-4 pt-6 pb-[max(2rem,env(safe-area-inset-bottom))] max-w-4xl mx-auto">
+    <main className="min-h-screen px-4 pt-[max(1.5rem,env(safe-area-inset-top))] pb-[max(2rem,env(safe-area-inset-bottom))] max-w-4xl mx-auto">
       {/* Header */}
       <header className="flex items-center justify-between border-b border-[#1e2235] pb-5">
         <div className="flex items-center gap-3">
